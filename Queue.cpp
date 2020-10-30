@@ -11,26 +11,24 @@ using namespace std;
 
 // Constructor for Queue
 Queue::Queue() {
-	// add something here?
+
 }
 // Destructor for Queue
 Queue::~Queue() {
-	// add something here?
+	
 }
 // Function to add item to queue
-void Queue::Enqueue(QueueItem item, int x, int y) {
+void Queue::Enqueue(char item, int x, int y) {
 	QL.AddNode(item, x, y);
 }
 // Function that deletes item from queue and returns item 
-QueueItem Queue::Dequeue() {
-	QueueItem tmp;
+void Queue::Dequeue() {
+	char tmp;
 	tmp = QL.FirstNode();
 	QL.DeleteNode();
-
-	return tmp;
 }
 // Function for retrieving the first item in the Queue
-QueueItem Queue::GetFront() {
+char Queue::GetFront() {
 	return QL.FirstNode();
 }
 int Queue::GetX() {
@@ -40,7 +38,7 @@ int Queue::GetY() {
 	return QL.FirstNodeY();
 }
 // Function for retrieving the last item in the Queue
-QueueItem Queue::GetEnd() {
+char Queue::GetEnd() {
 	return QL.LastNode();
 }
 // Function that returns if Queue is empty

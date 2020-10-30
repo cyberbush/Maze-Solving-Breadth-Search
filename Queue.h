@@ -10,8 +10,6 @@
 #include "LLQueue.h"
 using namespace std;
 
-typedef char QueueItem;
-
 class Queue {
 
 private:
@@ -21,12 +19,12 @@ public:
 	Queue(); // Constructor
 	~Queue(); // Destructor
 
-	void Enqueue(QueueItem item, int x, int y); // Add to Queue
-	QueueItem Dequeue(); // Remove from Queue
-	QueueItem GetFront(); // Return first item of Queue
+	void Enqueue(char item, int x, int y); // Add to Queue
+	void Dequeue(); // Remove from Queue
+	char GetFront(); // Return first item of Queue
 	int GetX(); // return x coord
 	int GetY(); // return y coord
-	QueueItem GetEnd(); // Return last item of Queue
+	char GetEnd(); // Return last item of Queue
 	
 	bool IsEmpty(); // Checks if Queue is empty
 

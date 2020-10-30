@@ -58,13 +58,14 @@ void Maze::GenerateVisit(int** ptr2D) {
 // Function that marks visited cells in char 2D array using int 2D array
 char** Maze::MarkVisited(int** ptr2I) {
 	char** ptr2C = NULL;
-	ptr2C = AllocateMaze(); // allocate
 	ptr2C = Original;
 	for (int i = 0; i < rows; i++) {
 		for (int j = 0; j < collumns; j++) {
-			//cout << "row : " << i << " coll : " << j << "\n";
 			if (ptr2I[i][j] == 1)
 				ptr2C[i][j] = 'v';
+			if (i == startY && j == startX) {
+				ptr2C[i][j] = 'S';
+			}
 		}
 	}
 	return ptr2C;
@@ -76,23 +77,28 @@ void Maze::DeleteMaze(char** ptr2D) {
 		delete ptr2D[i];
 	delete ptr2D;
 }
+// Function for deleting all pointers in the array
+void Maze::Delete2D(int** ptr2D) {
+	for (int i = 0; i < rows; i++)
+		delete ptr2D[i];
+	delete ptr2D;
+}
 // Function that takes a 2D array of chars and prints contents
 void Maze::PrintC(char** ptr2D) {
 	for (int i = 0; i < rows; i++) {
 		for (int j = 0; j < collumns; j++)
-			cout << ptr2D[i][j] << "\t";
-		cout << "\n\n";
+			cout << ptr2D[i][j] << " ";
+		cout << "\n";
 	}
 }
 // Function that takes a 2D array of ints and prints contents
 void Maze::PrintI(int** ptr2I) {
 	for (int i = 0; i < rows; i++) {
 		for (int j = 0; j < collumns; j++) {
-			cout << ptr2I[i][j] << "\t";	
+			cout << ptr2I[i][j] << " ";	
 		}
-		cout << "\n\n";
+		cout << "\n";
 	}
-	cout << "Hello Bob\n";
 
 }
 // Function that returns Maze array

@@ -7,13 +7,14 @@
 	To run use ./MazeSolver maze1.txt
 */
 #include <iostream>
+#include <string>
 #include "Queue.h"
 #include "Maze.h"
 using namespace std;
 
 // Protptypes
-char** MazeSolver(char** mazeptr, Maze* M); // Solves the maze one step at a time
-bool CheckAdjEnd(Maze* M, char** mazeptr, int x, int y); // Checks if adjacent to end
+void MazeSolver(char** mazeptr, Maze* M); // Solves the maze one step at a time
+bool CheckAdjEnd(Maze* M2, char** mazeptr2, int x, int y); // Checks if adjacent to end
 
 
 int main(int argc, char** argv) {
@@ -28,102 +29,116 @@ int main(int argc, char** argv) {
 
 	// Testing Maze 
 	Maze* M1 = new Maze;
-	char** testptr = NULL;
-	char** solveptr = NULL;
-	solveptr = M1->AllocateMaze();
+	char** testptr;
+
 	// Reading file and saving 2D Maze
 	M1->ReadFile(inFile);
+
 	// Set testptr to mazeptr 
 	testptr = M1->GetMaze("start");
+
 	// Printing Maze
-	cout << "Starting Maze : \n";
+	cout << "Maze at Start : \n";
 	M1->PrintC(testptr);
 
 	// Uses Breadth search to traverse maze
-	solveptr = MazeSolver(testptr, M1);
+	MazeSolver(testptr, M1);
 
-	cout << "This is the maze after traversal (v represents visited) : \n";
-	M1->PrintC(solveptr);
-
-	// Solver
-	/*char** solveptr = NULL;
-	solveptr = M1->AllocateMaze();
-	solveptr = MazeSolver(testptr, M1);
-	M1->Print(solveptr);
-	*/
+	// cleanup
+	delete M1;
+	exit(0);
 }
 
-char** MazeSolver(char** mazeptr, Maze* M) {
+void MazeSolver(char** mazeptr, Maze* M) {
 	Queue Q; // Item of Queue Class
 	int currX = M->GetStartX(), currY = M->GetStartY(); // Mark S as current cell
-	int** Visit = NULL;
-	char** MazeV = NULL;
+	int rows = M->GetRows(), colls = M->GetCollumns(); // Sets collumns and rows
+	int** Visit;
 	Visit = M->Allocate2D(); // allocate visit
-	cout << "Visit start\n";
-	M->PrintI(Visit);
+
+	//	cout << "Cells Visited Before (0 represents not visited) :\n";
+	//	M->PrintI(Visit);
+
 	bool empty = false;
+	
 	// Start Loop
-	do{
-		
+	while(empty != true){
 		// Step 1 Marks current cell as visited
 		Visit[currY][currX] = 1;
-
+		cout << "x is " << currX << " y is " << currY << "\n";
 		// Step 2 Add adjacent cells to Queue
 		// Adds the North Cell to Queue if conditions true
-		if (currY != 0 && Visit[currY - 1][currX] == 0 && mazeptr[currY - 1][currX] != '#') // North Cell 
+		if (currY != 0 && Visit[currY - 1][currX] == 0 && mazeptr[currY - 1][currX] != '#'){  
 			Q.Enqueue(mazeptr[currY - 1][currX], currX, currY - 1);
+			if (currX == 0 && currY-1 == 2)
+				cout << "Bad \n";
+		}
 		// Adds the East Cell to Queue if conditions true
-		if (currX != M->GetCollumns()-1 && Visit[currY][currX + 1] == 0 && mazeptr[currY][currX + 1] != '#')
+		if (currX != colls - 1 && Visit[currY][currX + 1] == 0 && mazeptr[currY][currX + 1] != '#'){
 			Q.Enqueue(mazeptr[currY][currX + 1], currX + 1, currY);
+			if (currX + 1 == 0 and currY == 2)
+				cout << "Bad \n";
+		}
 		// Adds the South Cell to Queue if conditions true
-		if (currY != M->GetRows()-1 && Visit[currY + 1][currX] == 0 && mazeptr[currY + 1][currX] != '#')
+		if (currY != rows - 1 && Visit[currY + 1][currX] == 0 && mazeptr[currY + 1][currX] != '#'){
 			Q.Enqueue(mazeptr[currY + 1][currX], currX, currY + 1);
+			if (currX == 0 && currY + 1 == 2)
+				cout << "Bad \n";
+		}
 		// Adds the West Cell to Queue if conditions true
-		if (currX != 0 && Visit[currY][currX - 1] == 0 && mazeptr[currY][currX - 1] != '#')
-			Q.Enqueue(mazeptr[currY][currX - 1], currX - 1, currY);
-
+		if (currX != 0 && Visit[currY][currX - 1] == 0 && mazeptr[currY][currX - 1] != '#'){
+				Q.Enqueue(mazeptr[currY][currX - 1], currX - 1, currY);
+				if (currX-1 == 0 and currY == 2)
+					cout << "Bad \n";
+		}
+		// checks if Queue is empty
+		if (Q.IsEmpty()) {
+			empty = true;
+			break;
+		}		
 		// Step 3 Remove next item from Queue and make it the current cell
 		currX = Q.GetX();
 		currY = Q.GetY();
 		Q.Dequeue();
-
 		// Step 4 Check if at end
-		if (CheckAdjEnd(M, mazeptr, currX, currY) == true) {
-			empty = true; // exits loop
+		if (CheckAdjEnd(M, mazeptr, currX, currY) == true){
 			Visit[currY][currX] = 1;
+			empty = true; // exits loop
+			break;
 		}
-		// checks if Queue is empty
-		if (Q.IsEmpty())
-			empty = true;
 
-	}while (empty != true);
-
-	cout << "These are the cells visited (1 represents visited) : \n";
-	M->PrintI(Visit);
+	}
+	
+	// cout << "Cells Visited (1 represents visited) : \n";
+	// M->PrintI(Visit);
 
 	// Mark visited cells in char maze
-	char** mazeVptr = NULL;
-	cout << "hi";
-	mazeVptr = M->AllocateMaze();
-	mazeVptr = M->MarkVisited(Visit);
-	return mazeVptr;
+	mazeptr = M->MarkVisited(Visit);
+
+	cout << "Maze After Traversal (V represents visited) : \n";
+	M->PrintC(mazeptr);
+
+	M->Delete2D(Visit);
+	
+	exit(0);
 }
+
 // Function to check if next to end cell
-bool CheckAdjEnd(Maze* M, char** mazeptr, int x, int y) {
+bool CheckAdjEnd(Maze* M2, char** mazeptr2, int x, int y) {
 	if (y != 0) {
-		if (mazeptr[y - 1][x] == 'G') // checks north cell
+		if (mazeptr2[y - 1][x] == 'G') // checks north cell
 			return true;
 	}
-	if (x != M->GetCollumns() - 1) {
-		if (mazeptr[y][x + 1] == 'G') // checks east cell
+	if (x != M2->GetCollumns() - 1) {
+		if (mazeptr2[y][x + 1] == 'G') // checks east cell
 			return true;
 	}
-	if(y != M->GetRows() - 1){
-		if (mazeptr[y + 1][x] == 'G') // checks south cell
+	if(y != M2->GetRows() - 1){
+		if (mazeptr2[y + 1][x] == 'G') // checks south cell
 			return true;
 	}
 	if (x != 0) {
-		if (mazeptr[y][x - 1] == 'G') // checks west cell
+		if (mazeptr2[y][x - 1] == 'G') // checks west cell
 			return true;
 	}
 	return false;

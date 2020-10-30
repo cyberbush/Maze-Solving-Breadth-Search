@@ -74,11 +74,12 @@ void LinkedList::Print()
 // Function to check if data x is in list
 bool LinkedList::IsInList(char x) {
 	nodeptr p = head;
-
-	while (p != NULL && x != p->data) {
+	nodeptr n = head->next;
+	while (p != NULL && x != n->data) {
+		n = n->next;
 		p = p->next;
 	}
-	return (x == p->data);
+	return (x == n->data);
 }
 // Function that returns size of list
 int LinkedList::Size() {
