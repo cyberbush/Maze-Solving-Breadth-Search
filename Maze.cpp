@@ -71,18 +71,6 @@ char** Maze::MarkVisited(int** ptr2I) {
 	return ptr2C;
 }
 
-// Function for deleting all pointers in the array
-void Maze::DeleteMaze(char** ptr2D) {
-	for (int i = 0; i < rows; i++)
-		delete ptr2D[i];
-	delete ptr2D;
-}
-// Function for deleting all pointers in the array
-void Maze::Delete2D(int** ptr2D) {
-	for (int i = 0; i < rows; i++)
-		delete ptr2D[i];
-	delete ptr2D;
-}
 // Function that takes a 2D array of chars and prints contents
 void Maze::PrintC(char** ptr2D) {
 	for (int i = 0; i < rows; i++) {
@@ -105,7 +93,6 @@ void Maze::PrintI(int** ptr2I) {
 char** Maze::GetMaze(string name) {
 	if (name == "start")
 		return Original;
-	else if (NULL) {
-		// place holder
-	}
+	else 
+		return NULL;
 }

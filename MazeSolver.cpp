@@ -8,14 +8,26 @@
 */
 #include <iostream>
 #include <string>
-#include "Queue.h"
 #include "Maze.h"
+#include <queue>
 using namespace std;
 
 // Protptypes
 void MazeSolver(char** mazeptr, Maze* M); // Solves the maze one step at a time
 bool CheckAdjEnd(Maze* M2, char** mazeptr2, int x, int y); // Checks if adjacent to end
 
+struct node {
+	char data;
+	int CoordX;
+	int CoordY; 
+	node* next;
+	node(char c, int i, int i2) {
+		data = c;
+		CoordX = i;
+		CoordY = i2;
+	}
+};
+typedef node* nodeptr;
 
 int main(int argc, char** argv) {
 	// Reads in file name from command line and saves it
@@ -50,7 +62,7 @@ int main(int argc, char** argv) {
 }
 
 void MazeSolver(char** mazeptr, Maze* M) {
-	Queue Q; // Item of Queue Class
+	queue<nodeptr> Q;
 	int currX = M->GetStartX(), currY = M->GetStartY(); // Mark S as current cell
 	int rows = M->GetRows(), colls = M->GetCollumns(); // Sets collumns and rows
 	int** Visit;
@@ -65,41 +77,41 @@ void MazeSolver(char** mazeptr, Maze* M) {
 	while(empty != true){
 		// Step 1 Marks current cell as visited
 		Visit[currY][currX] = 1;
-		cout << "x is " << currX << " y is " << currY << "\n";
 		// Step 2 Add adjacent cells to Queue
 		// Adds the North Cell to Queue if conditions true
-		if (currY != 0 && Visit[currY - 1][currX] == 0 && mazeptr[currY - 1][currX] != '#'){  
-			Q.Enqueue(mazeptr[currY - 1][currX], currX, currY - 1);
+		if (currY != 0 && Visit[currY - 1][currX] == 0 && mazeptr[currY - 1][currX] != '#'){
+			Q.push(new node(mazeptr[currY - 1][currX], currX, currY - 1));
 			if (currX == 0 && currY-1 == 2)
 				cout << "Bad \n";
 		}
 		// Adds the East Cell to Queue if conditions true
 		if (currX != colls - 1 && Visit[currY][currX + 1] == 0 && mazeptr[currY][currX + 1] != '#'){
-			Q.Enqueue(mazeptr[currY][currX + 1], currX + 1, currY);
+			Q.push(new node(mazeptr[currY][currX + 1], currX + 1, currY));
 			if (currX + 1 == 0 and currY == 2)
 				cout << "Bad \n";
 		}
 		// Adds the South Cell to Queue if conditions true
 		if (currY != rows - 1 && Visit[currY + 1][currX] == 0 && mazeptr[currY + 1][currX] != '#'){
-			Q.Enqueue(mazeptr[currY + 1][currX], currX, currY + 1);
+			Q.push(new node(mazeptr[currY + 1][currX], currX, currY + 1));
 			if (currX == 0 && currY + 1 == 2)
 				cout << "Bad \n";
 		}
 		// Adds the West Cell to Queue if conditions true
 		if (currX != 0 && Visit[currY][currX - 1] == 0 && mazeptr[currY][currX - 1] != '#'){
-				Q.Enqueue(mazeptr[currY][currX - 1], currX - 1, currY);
+				Q.push(new node(mazeptr[currY][currX - 1], currX - 1, currY));
 				if (currX-1 == 0 and currY == 2)
 					cout << "Bad \n";
 		}
 		// checks if Queue is empty
-		if (Q.IsEmpty()) {
+		if (Q.empty()) {
 			empty = true;
 			break;
 		}		
 		// Step 3 Remove next item from Queue and make it the current cell
-		currX = Q.GetX();
-		currY = Q.GetY();
-		Q.Dequeue();
+		nodeptr tmp = Q.front();
+		currX = tmp->CoordX;
+		currY = tmp->CoordY;
+		Q.pop();
 		// Step 4 Check if at end
 		if (CheckAdjEnd(M, mazeptr, currX, currY) == true){
 			Visit[currY][currX] = 1;
@@ -117,8 +129,6 @@ void MazeSolver(char** mazeptr, Maze* M) {
 
 	cout << "Maze After Traversal (V represents visited) : \n";
 	M->PrintC(mazeptr);
-
-	M->Delete2D(Visit);
 	
 	exit(0);
 }

@@ -7,7 +7,6 @@
 
 #include <stdbool.h>
 #include <iostream>
-#include "LLQueue.h"
 using namespace std;
 
 class Maze {
@@ -19,7 +18,7 @@ private:
 
 public:
 	Maze() { rows = collumns = startX = startY = 0; Original = NULL; } // Constructor
-	~Maze() { DeleteMaze(Original); } // Destructor
+	~Maze() { } // Destructor
 
 	void ReadFile(string file); // Reads in file
 	char** AllocateMaze(); // Allocates a 2D char array
@@ -31,8 +30,6 @@ public:
 	int GetStartY() { return startY; } // returns start coord y
 	int GetRows() { return rows; } // returns rows
 	int GetCollumns() { return collumns; } // returns collumns
-	void DeleteMaze(char** ptr2D); // Deletes a 2D char array
-	void Delete2D(int** ptr2D); // Deletes a 2D int array
 	void PrintC(char** ptr2D); // Prints 2D array chars
 	void PrintI(int** ptr2I); // Prints 2D array ints
 
